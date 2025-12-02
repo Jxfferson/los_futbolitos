@@ -1,3 +1,4 @@
+// src/App.tsx
 import { useState } from "react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";

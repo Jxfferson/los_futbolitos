@@ -1,0 +1,5 @@
+DATABASE_URL = "mysql+pymysql://root:TU_PASSWORD@localhost/los_futbolitos"
+
+SECRET_KEY = "TU_SECRETO_ULTRA_SEGURO"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60

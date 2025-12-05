@@ -150,7 +150,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$389.990",
       originalPrice: "$549.990",
       discount: "29%",
-      image: "https://assets.adidas.com/images/w_600,f_auto,q_auto/7d6d5a4d9fa14f44a0b4af52015d5e3f_9366/Stan_Smith_Zapatillas_Blanco_M20324_01_standard.jpg",
+      image: "https://assets.adidas.com/images/w_600,f_auto,q_auto/69721f2e7c934d909168a80e00818569_9366/Tenis_Stan_Smith_UNISEX_Blanco_M20324_01_standard.jpg",
     },
     {
       id: 11,
@@ -160,7 +160,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$279.990",
       originalPrice: "$349.990",
       discount: "20%",
-      image: "https://images.vans.com/is/image/Vans/UA3138-01?$600x600$",
+      image: "https://dpjye2wk9gi5z.cloudfront.net/wcsstore/ExtendedSitesCatalogAssetStore/images/catalog/zoom/1028151-0001V1.jpg",
     },
     {
       id: 12,
@@ -170,7 +170,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$319.990",
       originalPrice: "$419.990",
       discount: "24%",
-      image: "https://images.footlocker.com/is/image/FLUS/63361011_01?wid=600&hei=600&fmt=png-alpha",
+      image: "https://prochampions.vtexassets.com/arquivos/ids/1235280-800-800?v=638995881882330000&width=800&height=800&aspect=true",
     },
     {
       id: 13,
@@ -180,7 +180,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$249.990",
       originalPrice: "$329.990",
       discount: "24%",
-      image: "https://images.footlocker.com/is/image/FLUS/63361011_01?wid=600&hei=600&fmt=png-alpha",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBejt_oddlJz4SnzVYl19QIer8wZZwksschQ&s",
     },
     {
       id: 14,
@@ -190,7 +190,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$429.990",
       originalPrice: "$549.990",
       discount: "22%",
-      image: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/6c8a2e8d-2b1e-4d1d-a4e7-f5b35d57d1e0/zoomx-invincible-run-3-zapatillas-de-running-para-hombre-lKjJhD.png",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9vF3zNgCuRyXNOL5XSNGs-JYIJZPx5VF4Nw&s",
     },
     {
       id: 15,
@@ -200,7 +200,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$369.990",
       originalPrice: "$499.990",
       discount: "26%",
-      image: "https://assets.adidas.com/images/w_600,f_auto,q_auto/8e3d6b5e9fa14f44a0b4af52015d5e3f_9366/Superstar_Foundation_Zapatillas_Negras_GX6332_01_standard.jpg",
+      image: "https://assets.adidas.com/images/w_600,f_auto,q_auto/19af510062a24d3a85e8165855d90621_9366/Tenis_Superstar_Negro_JH7756_01_00_standard.jpg",
     },
     {
       id: 16,
@@ -210,7 +210,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$449.990",
       originalPrice: "$599.990",
       discount: "25%",
-      image: "https://nb.scene7.com/is/image/NB/m550wtw_frt_a?wid=1000&hei=1000",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjFabF2KX0D1HPGVEGTuqwJ6qAuPqx84BV-g&s",
     },
 
     // NIÑOS
@@ -222,7 +222,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$249.990",
       originalPrice: "$329.990",
       discount: "24%",
-      image: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/7e3f4d65-221e-4d1d-a4e7-f5b35d57d1e0/star-runner-3-zapatillas-preescolar-lKjJhD.png",
+      image: "https://tiendaspls.com/wp-content/uploads/2023/09/da2776-001_1.jpg",
     },
     {
       id: 18,
@@ -232,7 +232,7 @@ export default function Home({ changePage }: HomeProps) {
       price: "$219.990",
       originalPrice: "$299.990",
       discount: "27%",
-      image: "https://assets.adidas.com/images/w_600,f_auto,q_auto/8e3d6b5e9fa14f44a0b4af52015d5e3f_9366/Superstar_Foundation_Zapatillas_Negras_GX6332_01_standard.jpg",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpinUbcK0kFRHneC4DMheDkTEa1ijGMmOJGg&s",
     },
     {
       id: 19,

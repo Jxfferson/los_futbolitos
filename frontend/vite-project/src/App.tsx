@@ -11,8 +11,6 @@ export default function App() {
 
   return (
     <>
-      <header className="header">LOS FUTBOLITOS – Sistema de Inventario</header>
-
       {page === "home" && <Home changePage={setPage} />}
       {page === "login" && <Login changePage={setPage} />}
       {page === "productos" && <Productos changePage={setPage} />}

@@ -8,6 +8,7 @@ interface HomeProps {
 
 export default function Home({ changePage }: HomeProps) {
   const { user, logout } = useAuth(); // Obtiene el usuario y la función de logout
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para el menú desplegable
 
   const sneakerBrands = [
     {
@@ -179,8 +180,8 @@ export default function Home({ changePage }: HomeProps) {
 
   // 👇 Función para manejar el cierre de sesión
   const handleLogout = () => {
-    logout(); // Limpia el estado y localStorage
-    changePage("login"); // Cambia a la página de login
+    logout();
+    changePage("login");
   };
 
   return (
@@ -198,18 +199,84 @@ export default function Home({ changePage }: HomeProps) {
               />
             </div>
             <div className="flex gap-6 items-center">
-              <button className="text-gray-600 hover:text-black transition">🔍</button>
-              <button className="text-gray-600 hover:text-black transition">🛒</button>
-              {/* 👇 Botón dinámico: muestra nombre o "Iniciar sesión" */}
+              <button className="text-gray-600 hover:text-black transition">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+              <button className="text-gray-600 hover:text-black transition">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10v8a2 2 0 002 2H5a2 2 0 002-2v-8m7-1a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </button>
+
+              {/* 👇 Menú de usuario */}
               {user ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-700">Hola, {user.nombre}</span>
+                <div className="relative">
                   <button
-                    onClick={handleLogout} // ← Al hacer clic, cierra sesión y va al login
-                    className="text-black font-semibold hover:text-gray-600 transition text-sm"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="flex items-center gap-2 text-black font-semibold hover:text-gray-600 transition"
                   >
-                    Cerrar sesión
+                    <span className="text-sm">👋 {user.nombre}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
+
+                  {/* Menú desplegable */}
+                  {isMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                      <div className="py-2">
+                        <button
+                          onClick={() => {
+                            changePage("productos"); // Cambia por tu página de perfil
+                            setIsMenuOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14a4 4 0 014-4h4M12 14a4 4 0 01-4-4h-4m4 4v8m4-8v8" />
+                          </svg>
+                          Mi perfil
+                        </button>
+                        <button
+                          onClick={() => {
+                            changePage("productos"); // Cambia por tu página de ajustes
+                            setIsMenuOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-.416 1.088-.416 1.514 0L20.488 13c1.128 1.128 1.128 3.243 0 4.371l-8.669 8.669a2.25 2.25 0 01-3.182 0l-8.669-8.669a2.25 2.25 0 010-3.182l8.669-8.669z" />
+                          </svg>
+                          Ajustes
+                        </button>
+                        <button
+                          onClick={() => {
+                            changePage("productos"); // Cambia por tu página de carrito
+                            setIsMenuOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M12 13a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                          Mis productos
+                        </button>
+                        <hr className="my-2 border-gray-200" />
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 6v-6" />
+                          </svg>
+                          Cerrar sesión
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <button

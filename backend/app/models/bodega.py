@@ -1,7 +1,7 @@
+# backend/models/bodega.py
 from sqlalchemy import Column, Integer, String
-from app.db import Base
-
-class Bodega(Base):
+from app.db import db
+class Bodega(db.Model):
     __tablename__ = "bodega"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

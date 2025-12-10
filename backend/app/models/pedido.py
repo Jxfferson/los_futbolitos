@@ -1,9 +1,10 @@
+# backend/models/pedido.py
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.db import Base
+from ..db import db
 
-class Pedido(Base):
+class Pedido(db.Model):
     __tablename__ = "pedido"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

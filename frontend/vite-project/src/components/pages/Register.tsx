@@ -1,57 +1,56 @@
-"use client"
+// src/components/pages/Register.tsx
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { useAuth } from "../../context/auth-provider"
+import type React from "react";
+import { useState } from "react";
+import { useAuth } from "../../context/auth-provider";
 
 interface Props {
-  changePage: (page: string) => void
+  changePage: (page: string) => void;
 }
 
 export default function Register({ changePage }: Props) {
-  const { register } = useAuth()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [nombre, setNombre] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const { register } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     if (!email || !password || !nombre || !confirmPassword) {
-      setError("Por favor completa todos los campos")
-      return
+      setError("Por favor completa todos los campos");
+      return;
     }
 
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden")
-      return
+      setError("Las contraseñas no coinciden");
+      return;
     }
 
     if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres")
-      return
+      setError("La contraseña debe tener al menos 6 caracteres");
+      return;
     }
 
     try {
-      setLoading(true)
-      await register({ email, password, nombre })
-      changePage("home")
+      setLoading(true);
+      await register({ email, password, nombre });
+      changePage("home");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error en el registro")
+      setError(err instanceof Error ? err.message : "Error en el registro");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Nike Logo */}
         <div className="flex justify-center mb-8">
           <div className="text-4xl font-black">🔥</div>
         </div>
@@ -127,5 +126,5 @@ export default function Register({ changePage }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }

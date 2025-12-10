@@ -1,7 +1,10 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-from app.config import DATABASE_URL
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import declarative_base
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+db = SQLAlchemy()
 Base = declarative_base()
+
+def init_db(app):
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()  # Crea las tablas si no existen

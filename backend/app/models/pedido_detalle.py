@@ -1,8 +1,8 @@
+# backend/models/pedido_detalle.py
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from app.db import Base
-
-class PedidoDetalle(Base):
+from app.db import db
+class PedidoDetalle(db.Model):
     __tablename__ = "pedido_detalle"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

@@ -1,7 +1,8 @@
+# backend/models/proveedor.py
 from sqlalchemy import Column, Integer, String
-from app.db import Base
+from app.db import db
 
-class Proveedor(Base):
+class Proveedor(db.Model):
     __tablename__ = "proveedor"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

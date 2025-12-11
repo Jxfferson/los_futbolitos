@@ -1,14 +1,16 @@
 // src/components/pages/Home.tsx
 import { useState } from "react";
-import { useAuth } from "../../context/auth-provider"; // Importa el contexto de autenticación
+import { useAuth } from "../../context/auth-provider";
+import { useCart } from "../../context/cart-context"; // ← Importa el carrito
 
 interface HomeProps {
   changePage: (page: string) => void;
 }
 
 export default function Home({ changePage }: HomeProps) {
-  const { user, logout } = useAuth(); // Obtiene el usuario y la función de logout
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para el menú desplegable
+  const { user, logout } = useAuth();
+  const { totalItems, addItem } = useCart(); // ← Usa addItem y totalItems
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const sneakerBrands = [
     {
@@ -178,7 +180,30 @@ export default function Home({ changePage }: HomeProps) {
     }
   };
 
-  // 👇 Función para manejar el cierre de sesión
+  // 👇 Función para limpiar y convertir el precio a número
+  const parsePrice = (priceStr: string): number => {
+    return parseFloat(
+      priceStr
+        .replace("$", "")
+        .replace(/\./g, "") // Elimina puntos de miles
+        .replace(",", ".")   // Reemplaza coma por punto (por si hubiera)
+    );
+  };
+
+  // 👇 Función para agregar al carrito
+  const addToCart = (product: any) => {
+    const cartItem = {
+      producto_id: product.id,
+      nombre: product.name,
+      precio: parsePrice(product.price),
+      cantidad: 1,
+      image: product.image,
+      marca: product.name.split(" ")[0] || "Sin marca", // Extrae marca del nombre
+    };
+    addItem(cartItem);
+    alert(`✅ ${product.name} agregado al carrito`);
+  };
+
   const handleLogout = () => {
     logout();
     changePage("login");
@@ -200,17 +225,49 @@ export default function Home({ changePage }: HomeProps) {
             </div>
             <div className="flex gap-6 items-center">
               <button className="text-gray-600 hover:text-black transition">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-              <button className="text-gray-600 hover:text-black transition">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10v8a2 2 0 002 2H5a2 2 0 002-2v-8m7-1a4 4 0 11-8 0 4 4 0 018 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </button>
 
-              {/* 👇 Menú de usuario */}
+              {/* CARRITO */}
+              <button
+                onClick={() => changePage("carrito")}
+                className="relative text-gray-600 hover:text-black transition"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10v8a2 2 0 002 2H5a2 2 0 002-2v-8m7-1a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+
+              {/* MENÚ DE USUARIO */}
               {user ? (
                 <div className="relative">
                   <button
@@ -218,59 +275,118 @@ export default function Home({ changePage }: HomeProps) {
                     className="flex items-center gap-2 text-black font-semibold hover:text-gray-600 transition"
                   >
                     <span className="text-sm">👋 {user.nombre}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-5 w-5 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </button>
 
-                  {/* Menú desplegable */}
                   {isMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                       <div className="py-2">
                         <button
                           onClick={() => {
-                            changePage("productos"); // Cambia por tu página de perfil
+                            changePage("productos");
                             setIsMenuOpen(false);
                           }}
                           className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14a4 4 0 014-4h4M12 14a4 4 0 01-4-4h-4m4 4v8m4-8v8" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 14a4 4 0 014-4h4M12 14a4 4 0 01-4-4h-4m4 4v8m4-8v8"
+                            />
                           </svg>
                           Mi perfil
                         </button>
                         <button
                           onClick={() => {
-                            changePage("productos"); // Cambia por tu página de ajustes
+                            changePage("productos");
                             setIsMenuOpen(false);
                           }}
                           className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-.416 1.088-.416 1.514 0L20.488 13c1.128 1.128 1.128 3.243 0 4.371l-8.669 8.669a2.25 2.25 0 01-3.182 0l-8.669-8.669a2.25 2.25 0 010-3.182l8.669-8.669z" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10.325 4.317c.426-.416 1.088-.416 1.514 0L20.488 13c1.128 1.128 1.128 3.243 0 4.371l-8.669 8.669a2.25 2.25 0 01-3.182 0l-8.669-8.669a2.25 2.25 0 010-3.182l8.669-8.669z"
+                            />
                           </svg>
                           Ajustes
                         </button>
                         <button
                           onClick={() => {
-                            changePage("productos"); // Cambia por tu página de carrito
+                            changePage("carrito");
                             setIsMenuOpen(false);
                           }}
                           className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M12 13a2 2 0 100-4 2 2 0 000 4z" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 11V7a4 4 0 00-8 0v4M12 13a2 2 0 100-4 2 2 0 000 4z"
+                            />
                           </svg>
-                          Mis productos
+                          Mi carrito
                         </button>
                         <hr className="my-2 border-gray-200" />
                         <button
                           onClick={handleLogout}
                           className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 6v-6" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 6v-6"
+                            />
                           </svg>
                           Cerrar sesión
                         </button>
@@ -414,10 +530,12 @@ export default function Home({ changePage }: HomeProps) {
                 .map((product) => (
                   <div
                     key={product.id}
-                    className="group cursor-pointer bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition"
-                    onClick={() => changePage("productos")}
+                    className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition"
                   >
-                    <div className="h-64 overflow-hidden">
+                    <div
+                      className="h-64 overflow-hidden cursor-pointer"
+                      onClick={() => changePage("productos")}
+                    >
                       <img
                         src={product.image}
                         alt={product.name}
@@ -433,6 +551,17 @@ export default function Home({ changePage }: HomeProps) {
                         <span className="text-sm text-gray-400 line-through">{product.originalPrice}</span>
                       </div>
                       <p className="text-sm font-bold text-green-600 mt-1">{product.discount} de descuento</p>
+
+                      {/* 👇 BOTÓN AGREGAR AL CARRITO */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Evita que se dispare el click de la tarjeta
+                          addToCart(product);
+                        }}
+                        className="mt-3 w-full py-2 bg-black text-white text-sm font-medium rounded hover:bg-gray-800 transition"
+                      >
+                        Agregar al carrito
+                      </button>
                     </div>
                   </div>
                 ))}

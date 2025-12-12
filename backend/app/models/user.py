@@ -12,7 +12,6 @@ class User(db.Model):
     contraseña_hash = Column(String(255), nullable=False)
     rol = Column(Enum("usuario", "empleado", "admin"), nullable=False, default="usuario")
 
-    carrito = relationship("Carrito", uselist=False, back_populates="usuario")
 
     def set_password(self, password):
         self.contraseña_hash = generate_password_hash(password)

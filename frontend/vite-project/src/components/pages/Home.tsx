@@ -1,15 +1,15 @@
 // src/components/pages/Home.tsx
 import { useState } from "react";
 import { useAuth } from "../../context/auth-provider";
-import { useCart } from "../../context/cart-context"; // ← Importa el carrito
+import { useCart } from "../../context/cart-context";
 
 interface HomeProps {
-  changePage: (page: string) => void;
+  changePage: (page: string, productId?: number) => void;
 }
 
 export default function Home({ changePage }: HomeProps) {
   const { user, logout } = useAuth();
-  const { totalItems, addItem } = useCart(); // ← Usa addItem y totalItems
+  const { totalItems, addItem } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const sneakerBrands = [
@@ -180,17 +180,15 @@ export default function Home({ changePage }: HomeProps) {
     }
   };
 
-  // 👇 Función para limpiar y convertir el precio a número
   const parsePrice = (priceStr: string): number => {
     return parseFloat(
       priceStr
         .replace("$", "")
-        .replace(/\./g, "") // Elimina puntos de miles
-        .replace(",", ".")   // Reemplaza coma por punto (por si hubiera)
+        .replace(/\./g, "")
+        .replace(",", ".")
     );
   };
 
-  // 👇 Función para agregar al carrito
   const addToCart = (product: any) => {
     const cartItem = {
       producto_id: product.id,
@@ -198,7 +196,7 @@ export default function Home({ changePage }: HomeProps) {
       precio: parsePrice(product.price),
       cantidad: 1,
       image: product.image,
-      marca: product.name.split(" ")[0] || "Sin marca", // Extrae marca del nombre
+      marca: product.name.split(" ")[0] || "Sin marca",
     };
     addItem(cartItem);
     alert(`✅ ${product.name} agregado al carrito`);
@@ -296,7 +294,7 @@ export default function Home({ changePage }: HomeProps) {
                       <div className="py-2">
                         <button
                           onClick={() => {
-                            changePage("productos");
+                            changePage("perfil");
                             setIsMenuOpen(false);
                           }}
                           className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -491,7 +489,7 @@ export default function Home({ changePage }: HomeProps) {
                 <div
                   key={i}
                   className="flex-shrink-0 w-[calc(100%/4)] group cursor-pointer text-center"
-                  onClick={() => changePage("productos")}
+                  onClick={() => changePage("productos")} // ← Dejar como está (catálogo)
                 >
                   <div className="relative h-40 overflow-hidden rounded-xl bg-gray-100 mb-3 flex items-center justify-center">
                     <img
@@ -534,7 +532,7 @@ export default function Home({ changePage }: HomeProps) {
                   >
                     <div
                       className="h-64 overflow-hidden cursor-pointer"
-                      onClick={() => changePage("productos")}
+                      onClick={() => changePage("product-detail", product.id)} // ✅ AHORA VA A DETALLE
                     >
                       <img
                         src={product.image}
@@ -552,10 +550,9 @@ export default function Home({ changePage }: HomeProps) {
                       </div>
                       <p className="text-sm font-bold text-green-600 mt-1">{product.discount} de descuento</p>
 
-                      {/* 👇 BOTÓN AGREGAR AL CARRITO */}
                       <button
                         onClick={(e) => {
-                          e.stopPropagation(); // Evita que se dispare el click de la tarjeta
+                          e.stopPropagation();
                           addToCart(product);
                         }}
                         className="mt-3 w-full py-2 bg-black text-white text-sm font-medium rounded hover:bg-gray-800 transition"

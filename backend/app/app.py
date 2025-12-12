@@ -1,4 +1,4 @@
-# backend/app.py
+# backend/app/app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from app.db import db, init_db
@@ -26,7 +26,7 @@ def create_app():
         data = request.get_json()
         nombre = data.get('nombre')
         email = data.get('email')
-        password = data.get('contraseña')  # Nota: tu frontend envía "contraseña"
+        password = data.get('contraseña')
 
         if not nombre or not email or not password:
             return jsonify({'message': 'Faltan datos'}), 400
@@ -57,14 +57,63 @@ def create_app():
                 'id': str(user.id),
                 'email': user.email,
                 'nombre': user.nombre,
-                'rol': user.rol
+                'rol': user.rol,
+                'avatar': getattr(user, 'avatar', None)
             }
         }), 200
+
+    # === RUTA PARA SUBIR ZAPATO (solo admin) ===
+    @app.route('/api/zapatos', methods=['POST'])
+    def crear_zapato():
+        data = request.get_json()
+
+        required = ["nombre", "marca_id", "precio", "genero", "imagen_url"]
+        for field in required:
+            if not data.get(field):
+                return jsonify({'message': f'Falta el campo: {field}'}), 400
+
+        user_id = data.get('usuario_id')
+        if not user_id:
+            return jsonify({'message': 'Se requiere ID de usuario'}), 400
+
+        user = User.query.get(user_id)
+        if not user or user.rol != "admin":
+            return jsonify({'message': 'Acceso denegado: solo administradores pueden subir zapatos'}), 403
+
+        marca = Marca.query.get(data['marca_id'])
+        if not marca:
+            return jsonify({'message': 'Marca no válida'}), 400
+
+        proveedor = Proveedor.query.first()
+        if not proveedor:
+            proveedor = Proveedor(nombre="Proveedor General", contacto_email="contacto@ejemplo.com", telefono="0000000000")
+            db.session.add(proveedor)
+            db.session.commit()
+
+        nuevo_zapato = Producto(
+            sku=f"SKU-{data['nombre'].replace(' ', '_').lower()}",
+            nombre=data['nombre'],
+            marca_id=data['marca_id'],
+            proveedor_id=proveedor.id,
+            precio=int(data['precio']),
+            genero=data.get('genero', 'hombre'),
+            temporada=data.get('temporada', 'casual'),
+            descripcion=data.get('descripcion', ''),
+            imagen_url=data['imagen_url']
+        )
+
+        try:
+            db.session.add(nuevo_zapato)
+            db.session.commit()
+            return jsonify({'message': 'Zapato creado con éxito', 'id': nuevo_zapato.id}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'message': 'Error al crear zapato', 'error': str(e)}), 500
 
     # === RUTAS DE PRODUCTOS ===
     @app.route('/api/productos', methods=['GET'])
     def get_productos():
-        categoria = request.args.get('categoria')  # ?categoria=hombre
+        categoria = request.args.get('categoria')
         query = Producto.query
 
         if categoria:
@@ -105,7 +154,7 @@ def create_app():
             })
         return jsonify(result), 200
 
-    # === RUTA DE SALUD (para probar) ===
+    # === RUTA DE SALUD ===
     @app.route('/health', methods=['GET'])
     def health():
         return jsonify({'status': 'OK'}), 200
